@@ -126,6 +126,15 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         raise credentials_exception
     return user
 
+# Helper function to convert MongoDB document
+def convert_mongo_doc(doc):
+    if doc:
+        doc.pop('_id', None)  # Remove MongoDB ObjectId
+    return doc
+
+def convert_mongo_docs(docs):
+    return [convert_mongo_doc(doc) for doc in docs]
+
 # Initialize sample products
 @app.on_event("startup")
 async def startup_event():
@@ -148,7 +157,7 @@ async def startup_event():
                 "description": "Fresh mixed vegetables for healthy cooking",
                 "price": 4.99,
                 "category": "vegetables",
-                "image_url": "https://images.unsplash.com/photo-1579113800032-c38bd7635818?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzd8MHwxfHNlYXJjaHwyfHxmcmVzaCUyMGZvb2R8ZW58MHx8fHwxNzU1MjU0MDc2fDA&ixlib=rb-4.1.0&q=85",
+                "image_url": "https://images.unsplash.com/photo-1579113800032-c38bd7635818?crop=entropy&cs=srgb&fm=jwt&ixid=M3w3NTY2Nzd8MHwxfHNlYXJjaHwyfHxmcmVzaCUyMGZvb2R8ZW58MHx8fHwxNzU1MjU0MDc2fDA&ixlib=rb-4.1.0&q=85",
                 "stock": 100
             },
             {
