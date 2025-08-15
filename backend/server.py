@@ -322,19 +322,19 @@ async def create_order(order: OrderCreate, current_user: dict = Depends(get_curr
     }
     
     await db.orders.insert_one(order_data)
-    return order_data
+    return convert_mongo_doc(order_data)
 
 @app.get("/api/orders")
 async def get_user_orders(current_user: dict = Depends(get_current_user)):
     orders = await db.orders.find({"user_id": current_user["id"]}).sort("created_at", -1).to_list(length=None)
-    return orders
+    return convert_mongo_docs(orders)
 
 @app.get("/api/orders/{order_id}")
 async def get_order(order_id: str, current_user: dict = Depends(get_current_user)):
     order = await db.orders.find_one({"id": order_id, "user_id": current_user["id"]})
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    return order
+    return convert_mongo_doc(order)
 
 # Mock payment endpoint
 @app.post("/api/orders/{order_id}/pay")
