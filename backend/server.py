@@ -261,14 +261,14 @@ async def get_products(category: Optional[str] = None, search: Optional[str] = N
         ]
     
     products = await db.products.find(query).to_list(length=None)
-    return products
+    return convert_mongo_docs(products)
 
 @app.get("/api/products/{product_id}")
 async def get_product(product_id: str):
     product = await db.products.find_one({"id": product_id})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
-    return product
+    return convert_mongo_doc(product)
 
 @app.get("/api/categories")
 async def get_categories():
