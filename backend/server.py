@@ -361,7 +361,7 @@ async def get_all_orders(current_user: dict = Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="Admin access required")
     
     orders = await db.orders.find({}).sort("created_at", -1).to_list(length=None)
-    return orders
+    return convert_mongo_docs(orders)
 
 @app.put("/api/admin/orders/{order_id}/status")
 async def update_order_status(order_id: str, status: str, current_user: dict = Depends(get_current_user)):
@@ -384,7 +384,7 @@ async def create_product(product: ProductCreate, current_user: dict = Depends(ge
     product_data["created_at"] = datetime.utcnow()
     
     await db.products.insert_one(product_data)
-    return product_data
+    return convert_mongo_doc(product_data)
 
 @app.put("/api/admin/products/{product_id}")
 async def update_product(product_id: str, product: ProductCreate, current_user: dict = Depends(get_current_user)):
